@@ -262,6 +262,9 @@ class Battle:
         return active_bar
 
     def update(self):
+        self.player.lead.update_hp()
+        self.opponent.lead.update_hp()
+
         self.blit_all_assets()
         self.check_interactions()
         self.init_active_menu()

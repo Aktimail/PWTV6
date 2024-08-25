@@ -1,4 +1,5 @@
 import json
+from type import Type
 
 
 class Move:
@@ -8,7 +9,7 @@ class Move:
         self.klass = data["klass"]
         self.id = data["id"]
         self.name = data["dbSymbol"]
-        self.type = data["type"]
+        self.type = Type(data["type"])
 
         self.power = data["power"]
         self.accuracy = data["accuracy"]

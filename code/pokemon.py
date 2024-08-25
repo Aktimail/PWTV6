@@ -4,6 +4,7 @@ import json
 
 from data import DATA
 from move import Move
+from type import Type
 
 
 class Pokemon:
@@ -84,6 +85,7 @@ class Pokemon:
         self.front_offset_y = self.forms[0]["frontOffsetY"]
 
         self.comments = []
+        self.damages_received = 0
 
     def get_gender(self):
         if self.forms[0]["femaleRate"] == -1:
@@ -92,9 +94,9 @@ class Pokemon:
 
     def get_type(self):
         if self.forms[0]["type2"] == "__undef__":
-            return [self.forms[0]["type1"]]
-        return [self.forms[0]["type1"],
-                self.forms[0]["type2"]]
+            return [Type(self.forms[0]["type1"])]
+        return [Type(self.forms[0]["type1"]),
+                Type(self.forms[0]["type2"])]
 
     def init_mods(self, mod):
         if mod:
@@ -142,12 +144,24 @@ class Pokemon:
                         moveset.remove(random.choice(moveset))
         return moveset
 
+    def update_hp(self):
+        if self.damages_received:
+            self.damages_received -= 1
+            self.hp -= 1
+            self.check_hp()
+
     def update_stat(self, stat):
         if stat == "hp":
             return math.floor(((self.ivs[stat] + 2 * self.base_stats[stat] + math.floor(self.evs[stat] / 4)) *
                                self.level / 100) + self.level + 10)
         return math.floor((((self.ivs[stat] + 2 * self.base_stats[stat] + math.floor(self.evs[stat] / 4)) *
                             self.level / 100) + 5) * self.nature[stat])
+
+    def check_hp(self):
+        if self.hp <= 0:
+            self.hp = 0
+            self.ko = True
+            self.comments.append(str(self.name + " is ko !"))
 
     def remaining_exp_update(self):
         if self.level == 100:
@@ -169,32 +183,6 @@ class Pokemon:
                 return math.floor((self.level ** 3) * math.floor((1911 - 10 * self.level) / 3) / 500)
             elif self.level <= 100:
                 return math.floor((self.level ** 3) * (160 - self.level) / 100)
-
-    def show_info(self):
-        print(self.name, end=""), print(" | " + str(self.status["main"]) if not self.status["main"] is None else "")
-        print(str(self.hp) + "/" + str(self.max_hp))
-        print("===============")
-        for t in self.type:
-            print(t)
-        print()
-        print("N°" + str(self.id), "| Gender :", self.gender, "| Lvl", self.level)
-        print("Ability :", self.ability, "| Item :", self.item)
-        print("===============")
-        print("Stats :")
-        stats_name = ["atk", "deff", "aspe", "dspe", "spd"]
-        stats = [self.atk, self.deff, self.aspe, self.dspe, self.spd]
-        for sn, s in zip(stats_name, stats):
-            print(sn, ":", s, "")
-        print("===============")
-        print("Moves :")
-        for m in self.moveset:
-            print(m.name, str(m.pp) + "/" + str(m.max_pp))
-
-    def check_hp(self):
-        if self.hp <= 0:
-            self.hp = 0
-            self.ko = True
-            self.comments.append(str(self.name + " is ko !"))
 
     def can_attack(self, move: Move, target):
         if self.ko or move.pp <= 0:
@@ -278,31 +266,30 @@ class Pokemon:
             # stab
             stab = 1
             for t in self.type:
-                if move.type == t:
+                if move.type.name == t.name:
                     stab = 1.5
             # types
             typeA, typeB = 1, 1
-            """
-            if move.type in target.type[0].immunities:
+            if target.type[0].name in move.type.immunes:
                 typeA = 0
-            elif move.type in target.type[0].resistances:
+            elif target.type[0].name in move.type.weaknesses:
                 typeA = 0.5
-            elif move.type in target.type[0].weakness:
+            elif target.type[0].name in move.type.strengths:
                 typeA = 2
-            if len(target.type) == 2:
-                if move.type in target.type[1].immunities:
+            if len(target.type) > 1:
+                if target.type[1].name in move.type.immunes:
                     typeB = 0
-                elif move.type in target.type[1].resistances:
+                elif target.type[1].name in move.type.weaknesses:
                     typeB = 0.5
-                elif move.type in target.type[1].weakness:
+                elif target.type[1].name in move.type.strengths:
                     typeB = 2
+
             if typeA == 0 or typeB == 0:
                 self.comments.append(str("It doesn't affect " + target.name))
             elif typeA + typeB < 2:
                 self.comments.append("It's not very effective...")
             elif typeA + typeB > 2.5:
                 self.comments.append("It's super effective !")
-            """
             # mod 3
             srf = 1
             eb = 1
@@ -330,8 +317,28 @@ class Pokemon:
                     pass
                 else:
                     dmgs = self.calcul_damages(move, target)
-                    target.hp -= dmgs
+                    target.damages_received = dmgs
                     target.check_hp()
             else:
                 self.comments.append("But it failed !")
-        return self.name, move.name, target.name
+        return
+
+    def show_info(self):
+        print(self.name, end=""), print(" | " + str(self.status["main"]) if not self.status["main"] is None else "")
+        print(str(self.hp) + "/" + str(self.max_hp))
+        print("===============")
+        for t in self.type:
+            print(t)
+        print()
+        print("N°" + str(self.id), "| Gender :", self.gender, "| Lvl", self.level)
+        print("Ability :", self.ability, "| Item :", self.item)
+        print("===============")
+        print("Stats :")
+        stats_name = ["atk", "deff", "aspe", "dspe", "spd"]
+        stats = [self.atk, self.deff, self.aspe, self.dspe, self.spd]
+        for sn, s in zip(stats_name, stats):
+            print(sn, ":", s, "")
+        print("===============")
+        print("Moves :")
+        for m in self.moveset:
+            print(m.name, str(m.pp) + "/" + str(m.max_pp))
