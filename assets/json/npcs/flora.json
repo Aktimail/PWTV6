@@ -1,0 +1,14 @@
+{
+"klass": "NPC",
+"dbSymbol": "Flora",
+"spritesheet": "hero_02",
+"direction": "right",
+"scan": 5,
+"team": {
+  "volcarona": 50
+},
+"fighter": true,
+"dialogs": ["salut tout le monde\nc est squeezie",
+"salutttt"],
+"dialogs2": ["letsgooooo", "ca marche ?"]
+}
