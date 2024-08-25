@@ -278,7 +278,7 @@ class Battle:
 
     def check_cursor(self):
         if self.interactive_rect["battle"].collidepoint(self.cursor.position) and self.cursor.button[0]:
-            pass
+            self.blit_battle_menu()
         elif self.interactive_rect["team"].collidepoint(self.cursor.position) and self.cursor.button[0]:
             pass
         elif self.interactive_rect["bag"].collidepoint(self.cursor.position) and self.cursor.button[0]:
