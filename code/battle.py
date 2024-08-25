@@ -17,9 +17,9 @@ class Battle:
 
         self.y_oscillation = (0, 5, 10, 5)
         self.y_oscillation_idx = 0
-        self.y_osc_idx_adaptator = 0
+        self.y_osc_idx_counter = 0
 
-        self.comments = []
+        self.active_menu = None
 
         self.interactive_rect = {}
 
@@ -48,56 +48,56 @@ class Battle:
                 "pos": (1200, 480)
             }
         }
-        battle_assets_size = (190, 80)
+        battle_asset_size = (190, 80)
         self.battle_menu_assets = {
             "move1": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": battle_assets_size,
+                "size": battle_asset_size,
                 "pos": (1005, 240)
             },
             "move2": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": battle_assets_size,
+                "size": battle_asset_size,
                 "pos": (1005, 320)
             },
             "move3": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": battle_assets_size,
+                "size": battle_asset_size,
                 "pos": (1005, 400)
             },
             "move4": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": battle_assets_size,
+                "size": battle_asset_size,
                 "pos": (1005, 480)
             }
         }
 
-        team_assets_size = (120, 80)
+        team_asset_size = (120, 80)
         x = 1075 if len(self.player.team) <= 3 else 950
         self.team_menu_assets = {
             "pkmn2": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_assets_size,
+                "size": team_asset_size,
                 "pos": (x, 320)
             },
             "pkmn3": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_assets_size,
+                "size": team_asset_size,
                 "pos": (x, 400)
             },
             "pkmn4": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_assets_size,
+                "size": team_asset_size,
                 "pos": (x, 480)
             },
             "pkmn5": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_assets_size,
+                "size": team_asset_size,
                 "pos": (x + 125, 320)
             },
             "pkmn6": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_assets_size,
+                "size": team_asset_size,
                 "pos": (x + 125, 400)
             }
         }
@@ -112,9 +112,9 @@ class Battle:
                 "pos": (-50, 442)
             },
             "pokemon": {
-                "image": pygame.image.load(self.player.team[0].back_spritesheet),
+                "image": pygame.image.load(self.player.lead.back_spritesheet),
                 "size": (672, 672),
-                "pos": [100, self.player.team[0].front_offset_y * 7 - self.y_oscillation[self.y_oscillation_idx]]
+                "pos": [100, self.player.lead.front_offset_y * 7 - self.y_oscillation[self.y_oscillation_idx]]
             },
             "pkmn_name": {
                 "image": None,
@@ -137,8 +137,8 @@ class Battle:
                 "pos": (0, 0)
             },
             "hp": {
-                "image": self.init_hp_color(self.player.team[0]),
-                "size": (int(self.player.team[0].hp / self.player.team[0].max_hp * 276), 12),
+                "image": self.init_hp_color(self.player.lead),
+                "size": (int(self.player.lead.hp / self.player.lead.max_hp * 276), 12),
                 "pos": (0, 0)
             },
             "pokeballs": {
@@ -156,9 +156,9 @@ class Battle:
                 "pos": (700, 225)
             },
             "pokemon": {
-                "image": pygame.image.load(self.opponent.team[0].spritesheet),
+                "image": pygame.image.load(self.opponent.lead.spritesheet),
                 "size": (288, 288),
-                "pos": [775, self.opponent.team[0].front_offset_y * 3 + 50]
+                "pos": [775, self.opponent.lead.front_offset_y * 3 + 50]
             },
             "pkmn_name": {
                 "image": None,
@@ -181,8 +181,8 @@ class Battle:
                 "pos": (0, 0)
             },
             "hp": {
-                "image": self.init_hp_color(self.opponent.team[0]),
-                "size": (int(self.opponent.team[0].hp / self.opponent.team[0].max_hp * 276), 12),
+                "image": self.init_hp_color(self.opponent.lead),
+                "size": (int(self.opponent.lead.hp / self.opponent.lead.max_hp * 276), 12),
                 "pos": (0, 30)
             },
             "pokeballs": {
@@ -206,7 +206,7 @@ class Battle:
         x = 0
         for asset in self.battle_menu_assets:
             x += 1
-            if x <= len(self.player.team[0].moveset):
+            if x <= len(self.player.lead.moveset):
                 image = self.battle_menu_assets[asset]["image"]
                 image = pygame.transform.scale(image, self.battle_menu_assets[asset]["size"])
                 self.display.blit(image, self.battle_menu_assets[asset]["pos"])
@@ -263,25 +263,45 @@ class Battle:
 
     def update(self):
         self.blit_all_assets()
-        self.check_cursor()
+        self.check_interactions()
+        self.init_active_menu()
+
         self.dialog_box.update()
 
         self.update_oscillation()
 
     def update_oscillation(self):
-        self.y_osc_idx_adaptator += 1
-        if self.y_osc_idx_adaptator > 15:
-            self.y_osc_idx_adaptator = 0
+        self.y_osc_idx_counter += 1
+        if self.y_osc_idx_counter > 15:
+            self.y_osc_idx_counter = 0
             self.y_oscillation_idx += 1
             if self.y_oscillation_idx >= len(self.y_oscillation):
                 self.y_oscillation_idx = 0
 
-    def check_cursor(self):
+    def init_active_menu(self):
         if self.interactive_rect["battle"].collidepoint(self.cursor.position) and self.cursor.button[0]:
-            self.blit_battle_menu()
+            self.active_menu = "battle"
         elif self.interactive_rect["team"].collidepoint(self.cursor.position) and self.cursor.button[0]:
-            pass
+            if len(self.player.team) > 1:
+                self.active_menu = "team"
         elif self.interactive_rect["bag"].collidepoint(self.cursor.position) and self.cursor.button[0]:
-            pass
+            self.active_menu = "bag"
         elif self.interactive_rect["run"].collidepoint(self.cursor.position) and self.cursor.button[0]:
-            pass
+            self.active_menu = "run"
+        elif self.cursor.button[0]:
+            self.active_menu = None
+
+    def check_interactions(self):
+        if self.active_menu == "battle":
+            self.blit_battle_menu()
+            for i in range(len(self.player.lead.moveset)):
+                if (self.interactive_rect["move" + str(i+1)].collidepoint(self.cursor.position)
+                        and self.cursor.button[0]):
+                    self.player.lead.attack(self.player.lead.moveset[i], self.opponent.lead)
+
+        if self.active_menu == "team":
+            self.blit_team_menu()
+            for i in range(1, len(self.player.team)):
+                if (self.interactive_rect["pkmn" + str(i+1)].collidepoint(self.cursor.position)
+                        and self.cursor.button[0]):
+                    self.player.switch(i)

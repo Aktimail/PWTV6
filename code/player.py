@@ -13,12 +13,14 @@ class Player(Entity):
         super().__init__(name, x, y)
         self.map = map
 
-        self.team = [Pokemon("haxorus", 50, {"moveset": ["dragon_claw"]}),
+        self.team = [Pokemon("haxorus", 50, {"moveset": ["dragon_claw", "pound"]}),
                      Pokemon("togekiss", 50),
                      Pokemon("pikachu", 50),
                      Pokemon("garchomp", 50),
                      Pokemon("zekrom", 50),
                      Pokemon("reshiram", 50)]
+        self.lead = self.team[0] if self.team else None
+
         self.inventory = {
             "Items": [],
             "Balls": [],

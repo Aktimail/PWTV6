@@ -17,8 +17,9 @@ class NPC(Entity):
         self.spritesheet = pygame.image.load(f"../assets/spritesheets/{data["spritesheet"]}.png")
         self.active_spritesheet = self.spritesheet
 
-        self.pkmns_mod = data["pkmns_mod"] if "pkmns_mod" in data else None
+        self.pkmn_mods = data["pkmns_mod"] if "pkmns_mod" in data else None
         self.team = self.init_team(data["team"])
+        self.lead = self.team[0] if self.team else None
         self.dialogs = data["dialogs"]
         self.dialogs2 = data["dialogs2"] if "dialogs2" in data else None
         self.fighter = data["fighter"] if "fighter" in data else False
@@ -52,15 +53,6 @@ class NPC(Entity):
             if self.direction == "left":
                 self.scan_rect = pygame.Rect(
                     self.position.x - 16 * self.scan_range, self.position.y, 16 * self.scan_range, 16)
-
-    def init_team(self, pkmns):
-        team = []
-        for pkmn in pkmns.items():
-            if self.pkmns_mod and pkmn[0] in self.pkmns_mod:
-                team.append(Pokemon(pkmn[0], pkmn[1], self.pkmns_mod[pkmn[0]]))
-            else:
-                team.append(Pokemon(pkmn[0], pkmn[1]))
-        return team
 
     def auto_move(self):
         if not self.stop:

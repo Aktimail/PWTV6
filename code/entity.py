@@ -1,6 +1,6 @@
 import pygame
 
-from tool import Tool
+from pokemon import Pokemon
 from data import DATA
 
 
@@ -29,6 +29,10 @@ class Entity(pygame.sprite.Sprite):
         self.collision = False
 
         self.hitbox = pygame.Rect(0, 0, 16, 16)
+
+        self.pkmn_mods = None
+        self.team = []
+        self.lead = None
 
     def update(self):
         self.hitbox.topleft = self.position
@@ -117,3 +121,20 @@ class Entity(pygame.sprite.Sprite):
             DATA.ENTITIES_DESTINATIONS[self.name] = (self.facing_tile.x, self.facing_tile.y)
             return True
         return False
+
+    def init_team(self, pkmns):
+        team = []
+        for pkmn in pkmns.items():
+            if self.pkmn_mods and pkmn[0] in self.pkmn_mods:
+                team.append(Pokemon(pkmn[0], pkmn[1], self.pkmn_mods[pkmn[0]]))
+            else:
+                team.append(Pokemon(pkmn[0], pkmn[1]))
+        return team
+
+    def attack(self, move, opp):
+        self.lead.attack(move, opp.lead)
+
+    def switch(self, pkmn):
+        self.lead.boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0}
+        self.team[0], self.team[pkmn] = self.team[pkmn], self.team[0]
+        self.lead = self.team[0]
