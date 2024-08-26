@@ -138,3 +138,9 @@ class Entity(pygame.sprite.Sprite):
         self.lead.boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0}
         self.team[0], self.team[pkmn] = self.team[pkmn], self.team[0]
         self.lead = self.team[0]
+
+    def lost(self):
+        for pkmn in self.team:
+            if not pkmn.ko:
+                return False
+        return True

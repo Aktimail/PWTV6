@@ -26,7 +26,7 @@ class Battle:
         self.player_assets = {}
         self.opp_assets = {}
 
-        self.main_menu_assets = {
+        self.main_menu_hud = {
             "battle": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": (80, 80),
@@ -48,63 +48,63 @@ class Battle:
                 "pos": (1200, 480)
             }
         }
-        battle_asset_size = (190, 80)
-        self.battle_menu_assets = {
+        move_asset_size = (190, 80)
+        self.battle_menu_hud = {
             "move1": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": battle_asset_size,
+                "size": move_asset_size,
                 "pos": (1005, 240)
             },
             "move2": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": battle_asset_size,
+                "size": move_asset_size,
                 "pos": (1005, 320)
             },
             "move3": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": battle_asset_size,
+                "size": move_asset_size,
                 "pos": (1005, 400)
             },
             "move4": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": battle_asset_size,
+                "size": move_asset_size,
                 "pos": (1005, 480)
             }
         }
 
-        team_asset_size = (120, 80)
+        pkmn_asset_size = (120, 80)
         x = 1075 if len(self.player.team) <= 3 else 950
-        self.team_menu_assets = {
+        self.team_menu_hud = {
             "pkmn2": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_asset_size,
+                "size": pkmn_asset_size,
                 "pos": (x, 320)
             },
             "pkmn3": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_asset_size,
+                "size": pkmn_asset_size,
                 "pos": (x, 400)
             },
             "pkmn4": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_asset_size,
+                "size": pkmn_asset_size,
                 "pos": (x, 480)
             },
             "pkmn5": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_asset_size,
+                "size": pkmn_asset_size,
                 "pos": (x + 125, 320)
             },
             "pkmn6": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": team_asset_size,
+                "size": pkmn_asset_size,
                 "pos": (x + 125, 400)
             }
         }
 
         self.dialog_box = DialogBox(self.screen, self.player, "battle_box", (1280, 150), (0, 570))
 
-    def init_player_assets(self):
+    def init_player_hud(self):
         self.player_assets = {
             "ground": {
                 "image": pygame.image.load("../assets/battle/player/ground.png"),
@@ -148,7 +148,7 @@ class Battle:
             }
         }
 
-    def init_opp_assets(self):
+    def init_opp_hud(self):
         self.opp_assets = {
             "ground": {
                 "image": pygame.image.load("../assets/battle/opponent/ground.png"),
@@ -193,62 +193,62 @@ class Battle:
         }
 
     def blit_main_menu(self):
-        for asset in self.main_menu_assets:
-            image = self.main_menu_assets[asset]["image"]
-            image = pygame.transform.scale(image, self.main_menu_assets[asset]["size"])
-            self.display.blit(image, self.main_menu_assets[asset]["pos"])
-            self.interactive_rect[asset] = pygame.Rect(self.main_menu_assets[asset]["pos"][0],
-                                                       self.main_menu_assets[asset]["pos"][1],
-                                                       self.main_menu_assets[asset]["size"][0],
-                                                       self.main_menu_assets[asset]["size"][1])
+        for asset in self.main_menu_hud:
+            image = self.main_menu_hud[asset]["image"]
+            image = pygame.transform.scale(image, self.main_menu_hud[asset]["size"])
+            self.display.blit(image, self.main_menu_hud[asset]["pos"])
+            self.interactive_rect[asset] = pygame.Rect(self.main_menu_hud[asset]["pos"][0],
+                                                       self.main_menu_hud[asset]["pos"][1],
+                                                       self.main_menu_hud[asset]["size"][0],
+                                                       self.main_menu_hud[asset]["size"][1])
 
     def blit_battle_menu(self):
         x = 0
-        for asset in self.battle_menu_assets:
+        for asset in self.battle_menu_hud:
             x += 1
             if x <= len(self.player.lead.moveset):
-                image = self.battle_menu_assets[asset]["image"]
-                image = pygame.transform.scale(image, self.battle_menu_assets[asset]["size"])
-                self.display.blit(image, self.battle_menu_assets[asset]["pos"])
-                self.interactive_rect[asset] = pygame.Rect(self.battle_menu_assets[asset]["pos"][0],
-                                                           self.battle_menu_assets[asset]["pos"][1],
-                                                           self.battle_menu_assets[asset]["size"][0],
-                                                           self.battle_menu_assets[asset]["size"][1])
+                image = self.battle_menu_hud[asset]["image"]
+                image = pygame.transform.scale(image, self.battle_menu_hud[asset]["size"])
+                self.display.blit(image, self.battle_menu_hud[asset]["pos"])
+                self.interactive_rect[asset] = pygame.Rect(self.battle_menu_hud[asset]["pos"][0],
+                                                           self.battle_menu_hud[asset]["pos"][1],
+                                                           self.battle_menu_hud[asset]["size"][0],
+                                                           self.battle_menu_hud[asset]["size"][1])
 
     def blit_team_menu(self):
         x = 0
-        for asset in self.team_menu_assets:
+        for asset in self.team_menu_hud:
             x += 1
             if x < len(self.player.team):
-                image = self.team_menu_assets[asset]["image"]
-                image = pygame.transform.scale(image, self.team_menu_assets[asset]["size"])
-                self.display.blit(image, self.team_menu_assets[asset]["pos"])
-                self.interactive_rect[asset] = pygame.Rect(self.team_menu_assets[asset]["pos"][0],
-                                                           self.team_menu_assets[asset]["pos"][1],
-                                                           self.team_menu_assets[asset]["size"][0],
-                                                           self.team_menu_assets[asset]["size"][1])
+                image = self.team_menu_hud[asset]["image"]
+                image = pygame.transform.scale(image, self.team_menu_hud[asset]["size"])
+                self.display.blit(image, self.team_menu_hud[asset]["pos"])
+                self.interactive_rect[asset] = pygame.Rect(self.team_menu_hud[asset]["pos"][0],
+                                                           self.team_menu_hud[asset]["pos"][1],
+                                                           self.team_menu_hud[asset]["size"][0],
+                                                           self.team_menu_hud[asset]["size"][1])
 
-    def blit_player_assets(self):
-        self.init_player_assets()
+    def blit_player_hud(self):
+        self.init_player_hud()
         for asset in self.player_assets:
             if self.player_assets[asset]["image"]:
                 image = self.player_assets[asset]["image"]
                 image = pygame.transform.scale(image, self.player_assets[asset]["size"])
                 self.display.blit(image, self.player_assets[asset]["pos"])
 
-    def blit_opp_assets(self):
-        self.init_opp_assets()
+    def blit_opp_hud(self):
+        self.init_opp_hud()
         for asset in self.opp_assets:
             if self.opp_assets[asset]["image"]:
                 image = self.opp_assets[asset]["image"]
                 image = pygame.transform.scale(image, self.opp_assets[asset]["size"])
                 self.display.blit(image, self.opp_assets[asset]["pos"])
 
-    def blit_all_assets(self):
+    def blit_hud(self):
         self.interactive_rect.clear()
         self.display.blit(self.background, (0, 0))
-        self.blit_opp_assets()
-        self.blit_player_assets()
+        self.blit_opp_hud()
+        self.blit_player_hud()
         self.blit_main_menu()
 
     @staticmethod
@@ -265,13 +265,16 @@ class Battle:
         self.player.lead.update_hp()
         self.opponent.lead.update_hp()
 
-        self.blit_all_assets()
+        self.blit_hud()
         self.check_interactions()
         self.init_active_menu()
 
         self.dialog_box.update()
 
         self.update_oscillation()
+        if self.player.lost() or self.opponent.lost():
+            self.player.fighting = False
+            self.player.opponent = None
 
     def update_oscillation(self):
         self.y_osc_idx_counter += 1
