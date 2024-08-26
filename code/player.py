@@ -5,7 +5,6 @@ from tool import Tool
 from entity import Entity
 from pokemon import Pokemon
 from move import Move
-from npc import NPC
 
 
 class Player(Entity):
