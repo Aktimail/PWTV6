@@ -46,7 +46,8 @@ class Map:
 
     def update(self):
         if not self.rest:
-            self.check_interactions()
+            self.check_ext_interactions()
+            self.check_player_interactions()
             self.check_object()
 
             self.group.update()
@@ -123,7 +124,23 @@ class Map:
                     self.gate = switch
                     self.switch_map(switch["destination"])
 
-    def check_interactions(self):
+    def check_player_interactions(self):
+        if self.player.interaction:
+            for npc in self.npcs:
+                if self.player.facing_tile == npc.hitbox:
+                    npc.facing_entity(self.player)
+                    self.current_dialogs = npc.dialogs
+                    if npc.name in self.player.npcs_encounter:
+                        if npc.dialogs2:
+                            self.current_dialogs = npc.dialogs2
+                    npc.scan_range = 0
+                    if npc.fighter:
+                        if npc.name not in self.player.npcs_encounter:
+                            self.player.opponent = npc
+                            self.player.npcs_encounter.append(npc.name)
+                    self.rest = True
+
+    def check_ext_interactions(self):
         self.player.stop = False
         for npc in self.npcs:
             if npc.name not in self.player.npcs_encounter:
@@ -137,21 +154,6 @@ class Map:
                             else:
                                 npc.stop = True
                                 self.player.interaction = True
-
-        if self.player.interaction:
-            for npc in self.npcs:
-                if self.player.facing_tile == npc.hitbox:
-                    npc.facing_entity(self.player)
-                    self.current_dialogs = npc.dialogs
-                    if npc.name in self.player.npcs_encounter:
-                        if npc.dialogs2:
-                            self.current_dialogs = npc.dialogs2
-                    npc.scan_range = 0
-                    if npc.name not in self.player.npcs_encounter:
-                        self.player.npcs_encounter.append(npc.name)
-                    if npc.fighter:
-                        self.player.opponent = npc
-                    self.rest = True
 
     def add_player(self, player):
         self.player = player

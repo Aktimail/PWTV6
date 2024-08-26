@@ -41,13 +41,13 @@ class Game:
         self.map.add_player(self.player)
 
     def save_data(self):
-        self.map.save()
+        # self.map.save()
         self.player.save_player()
 
     def input_handler(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                # self.save_data()
+                self.save_data()
                 self.running = False
 
             elif event.type == pygame.KEYDOWN:
