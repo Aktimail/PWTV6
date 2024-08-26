@@ -44,8 +44,8 @@ class Player(Entity):
 
         self.interaction = False
         self.npcs_encounter = []
-        self.opponent = NPC("Flora", 0, 0)
-        self.fighting = True
+        self.opponent = None
+        self.fighting = False
 
         self.bike = False
 
