@@ -1,7 +1,7 @@
 import pygame
 import pytmx
 import pyscroll
-import  json
+import json
 
 from npc import NPC
 from data import DATA

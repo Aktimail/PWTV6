@@ -64,28 +64,30 @@ class Player(Entity):
             json.dump(data, file)
 
     def save_team(self):
-        team_data = {}
+        team_data = []
         for pkmn in self.team:
-            team_data[pkmn.name] = {
-                "name": pkmn.name,
-                "level": pkmn.level,
-                "gender": pkmn.gender,
-                "ability": pkmn.ability,
-                "moveset": self.save_moves(),
-                "item": pkmn.item,
-                "ivs": pkmn.ivs,
-                "evs": pkmn.evs,
-                "nature": pkmn.nature,
-                "status": pkmn.status,
-                "exp": pkmn.exp
-            }
+            team_data.append(
+                {
+                    "name": pkmn.name,
+                    "level": pkmn.level,
+                    "gender": pkmn.gender,
+                    "ability": pkmn.ability,
+                    "moveset": self.save_moves(pkmn),
+                    "item": pkmn.item,
+                    "ivs": pkmn.ivs,
+                    "evs": pkmn.evs,
+                    "nature": pkmn.nature,
+                    "status": pkmn.status,
+                    "exp": pkmn.exp
+                }
+            )
         return team_data
 
-    def save_moves(self):
+    @staticmethod
+    def save_moves(pkmn):
         moves_data = []
-        for pkmn in self.team:
-            for move in pkmn.moveset:
-                moves_data.append((move.name, move.pp))
+        for move in pkmn.moveset:
+            moves_data.append((move.name, move.pp))
         return moves_data
 
     def load_data(self):
@@ -99,7 +101,7 @@ class Player(Entity):
                 self.npcs_encounter = data["npcs encounter"]
 
                 self.team.clear()
-                for pkmn in data["team"].values():
+                for pkmn in data["team"]:
                     P = Pokemon(pkmn["name"], pkmn["level"])
                     P.gender = pkmn["gender"]
                     P.ability = pkmn["ability"]
@@ -114,6 +116,7 @@ class Player(Entity):
                         P.moveset.append(Move(move[0]))
                         P.moveset[-1].pp = move[1]
                     self.team.append(P)
+                    self.lead = self.team[0]
 
     def update(self):
         self.check_inputs()
