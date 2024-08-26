@@ -30,7 +30,7 @@ class Game:
         }
 
         self.map = Map(self.screen)
-        self.player = Player("player", "hero_01", 800, 800, self.map, self.inputs_holder,
+        self.player = Player("player", "hero_01", 768, 752, self.map, self.inputs_holder,
                              self.controller)
 
         self.dialog_box = DialogBox(self.screen, self.player)
@@ -41,13 +41,13 @@ class Game:
         self.map.add_player(self.player)
 
     def save_data(self):
-        # self.map.save()
+        self.map.save()
         self.player.save_player()
 
     def input_handler(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.save_data()
+                # self.save_data()
                 self.running = False
 
             elif event.type == pygame.KEYDOWN:
