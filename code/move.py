@@ -18,6 +18,7 @@ class Move:
         self.category = data["category"]
 
         self.critical_rate = data["movecriticalRate"]
+        self.battle_engine_method = data["battleEngineMethod"]
         self.priority = data["priority"]
         self.feature = {
             "direct": data["isDirect"],
@@ -25,12 +26,12 @@ class Move:
             "recharge": data["isRecharge"],
             "blocable": data["isBlocable"],
             "snatchable": data["isSnatchable"],
-            "mirror move": data["isMirrorMove"],
+            "mirror_move": data["isMirrorMove"],
             "punch": data["isPunch"],
             "gravity": data["isGravity"],
-            "magic coat affected": data["isMagicCoatAffected"],
+            "magic_coat_affected": data["isMagicCoatAffected"],
             "unfreeze": data["isUnfreeze"],
-            "sound attack": data["isSoundAttack"],
+            "sound_attack": data["isSoundAttack"],
             "distance": data["isDistance"],
             "heal": data["isHeal"],
             "authentic": data["isAuthentic"],
@@ -38,9 +39,9 @@ class Move:
             "pulse": data["isPulse"],
             "ballistics": data["isBallistics"],
             "mental": data["isMental"],
-            "non sky battle": data["isNonSkyBattle"],
+            "non_sky_battle": data["isNonSkyBattle"],
             "dance": data["isDance"],
-            "king rock utility": data["isKingRockUtility"],
+            "king_rock_utility": data["isKingRockUtility"],
             "powder": data["isPowder"],
         }
         self.effect_chance = data["effectChance"]

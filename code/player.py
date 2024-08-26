@@ -12,7 +12,7 @@ class Player(Entity):
         super().__init__(name, x, y)
         self.map = map
 
-        self.team = [Pokemon("haxorus", 50, {"moveset": ["dragon_claw", "pound"]}),
+        self.team = [Pokemon("haxorus", 50, {"moveset": ["dragon_claw"]}),
                      Pokemon("togekiss", 50),
                      Pokemon("pikachu", 50),
                      Pokemon("garchomp", 50),

@@ -5,6 +5,8 @@ import json
 from data import DATA
 from move import Move
 from type import Type
+from item import Item
+from ability import Ability
 
 
 class Pokemon:
@@ -23,7 +25,7 @@ class Pokemon:
 
         self.gender = self.get_gender()
         self.type = self.get_type()
-        self.ability = random.choice(self.forms[0]["abilities"])
+        self.ability = Ability(random.choice(self.forms[0]["abilities"]))
         self.item = None
 
         self.movepool = self.forms[0]["moveSet"]
@@ -74,6 +76,14 @@ class Pokemon:
 
         self.ko = False
 
+        self.charge = False
+        self.mud_sport = False
+        self.water_sport = False
+        self.reflect = False
+        self.light_screen = False
+
+        self.damages_received = 0
+
         self.spritesheet = f"../assets/battle/pkmn_sprite_5g/{self.id}.png"
         self.back_spritesheet = f"../assets/battle/pkmn_sprite_5g/back/{self.id}.png"
         if self.shiny:
@@ -85,7 +95,6 @@ class Pokemon:
         self.front_offset_y = self.forms[0]["frontOffsetY"]
 
         self.comments = []
-        self.damages_received = 0
 
     def get_gender(self):
         if self.forms[0]["femaleRate"] == -1:
@@ -120,10 +129,10 @@ class Pokemon:
                     self.moveset.append(Move(move))
 
             if "ability" in mod:
-                self.ability = mod["ability"]
+                self.ability = Ability(mod["ability"])
 
             if "item" in mod:
-                self.item = mod["item"]
+                self.item = Item(mod["item"])
 
             if "shiny" in mod:
                 self.shiny = mod["shiny"]
@@ -226,26 +235,134 @@ class Pokemon:
         if move.power:
             # power
             hh = 1
+            if "helping hand" in self.status:
+                hh = 1.5
             it = 1
+            if self.item:
+                if self.item.name in DATA.plates:
+                    if DATA.plates[self.item.name] == move.type.name:
+                        it = 1.2
+                elif self.item.name in DATA.type_enhancing_item:
+                    if DATA.type_enhancing_item[self.item.name] == move.type.name:
+                        it = 1.2
+                elif self.item.name in DATA.type_enhancing_incences:
+                    if DATA.type_enhancing_incences[self.item.name] == move.type.name:
+                        it = 1.2
+                elif self.item.name in DATA.gems:
+                    if DATA.gems[self.item.name] == move.type.name:
+                        it = 1.2
+                elif self.item.name == "wise_glasses":
+                    if move.category == "special":
+                        it = 1.1
+                elif self.item.name == "muscle_band":
+                    if move.category == "physical":
+                        it = 1.1
+                elif self.item.name == "adamant_orb":
+                    if self.name == "dialga":
+                        if move.type.name == "steel" or move.type.name == "dragon":
+                            it = 1.2
+                elif self.item.name == "lustrous_orb":
+                    if self.name == "palkia":
+                        if move.type.name == "water" or move.type.name == "dragon":
+                            it = 1.2
             chg = 1
+            if self.charge and move.type.name == "electric":
+                chg = 2
             ms = 1
+            if self.mud_sport:
+                ms = 0.5
             ws = 1
+            if self.water_sport:
+                ws = 0.5
             ua = 1
+            if self.ability.name == "rivalry" and self.gender is not None and target.gender is not None:
+                if target.gender is self.gender:
+                    ua = 1.25
+                if target.gender is not self.gender:
+                    ua = 0.75
+            elif self.ability.name == "blaze" and move.type.name == "fire" and self.hp <= self.max_hp / 3:
+                ua = 1.5
+            elif self.ability.name == "torrent" and move.type == "water" and self.hp <= self.max_hp / 3:
+                ua = 1.5
+            elif self.ability.name == "overgrow" and move.type == "grass" and self.hp <= self.max_hp / 3:
+                ua = 1.5
+            elif self.ability.name == "swarm" and move.type == "bug" and self.hp <= self.max_hp / 3:
+                ua = 1.5
+            if self.ability.name == "technician" and move.power <= 60:
+                ua = 1.5
+            if self.ability.name == "iron_fist":
+                if move.feature["punch"]:
+                    ua = 1.2
+            if self.ability.name == "reckless":
+                if move.battle_engine_method == "s_recoil":
+                    ua = 1.2
             fa = 1
+            if target.ability.name == "thick_fat":
+                if move.type.name == "fire" or move.type.name == "ice":
+                    fa = 0.5
+            elif target.ability.name == "heatproof" and move.type == "fire":
+                fa = 0.5
+            elif target.ability.name == "dry_skin" and move.type.name == "fire":
+                fa = 1.25
             power = hh * move.power * it * chg * ms * ws * ua * fa
             # atk
             move_category = self.atk
             if move.category == "special":
                 move_category = self.aspe
             am = 1
+            if move.category == "physical":
+                if self.ability.name == "pure_power" or self.ability.name == "huge_power":
+                    am = 2
+                if self.ability.name == "guts":
+                    if self.status["main"] == "paralysis" or self.status["main"] == "poisoning" or \
+                            self.status["main"] == "burn" or self.status["main"] == "sleep":
+                        am = 1.5
+                elif self.ability.name == "hustle":
+                    am = 1.5
+            elif move.category == "special":
+                pass
             im = 1
+            if self.item:
+                if move.category == "physical":
+                    if self.item.name == "choice_band":
+                        im = 1.5
+                    if self.item.name == "light_ball" and self.name == "Pikachu":
+                        im = 2
+                    if self.item.name == "thick_club":
+                        if self.name == "Cubone" or self.name == "Marowak":
+                            im = 2
+                elif move.category == "special":
+                    if self.item.name == "choice_specs":
+                        im = 1.5
+                    if self.item.name == "light_ball" and self.name == "pikachu":
+                        im = 2
+                    if self.item.name == "soul_dew":
+                        if self.name == "latios" or self.name == "latias":
+                            im = 1.5
+                    if self.item.name == "deep_sea_tooth" and self.name == "clamperl":
+                        im = 2
             atk = move_category * am * im
             # deff
             target_deff = target.deff
             if move.category == "special":
                 target_deff = target.dspe
             sx = 1
+            if move.name == "explosion" or move.name == "self_destruct":
+                sx = 0.5
             mod = 1
+            if target.item:
+                if move.category == "physical":
+                    if target.item.name == "marvel_scale":
+                        if target.status["main"] == "poisoning" or target.status["main"] == "sleep" or \
+                                target.status["main"] == "paralysis" or target.status["main"] == "freeze" or \
+                                target.status["main"] == "burn":
+                            mod = 1.5
+                elif move.category == "special":
+                    if target.item.name == "soul_dew":
+                        if target.name == "latios" or target.name == "latias":
+                            mod = 1.5
+                    elif target.item.name == "deep_sea_scale" and target.name == "clamperl":
+                        mod = 2
             deff = target_deff * sx * mod
             # mod 1
             brn = 1
