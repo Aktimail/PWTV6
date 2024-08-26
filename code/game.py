@@ -47,7 +47,7 @@ class Game:
     def input_handler(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.save_data()
+                # self.save_data()
                 self.running = False
 
             elif event.type == pygame.KEYDOWN:
