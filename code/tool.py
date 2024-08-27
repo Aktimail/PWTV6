@@ -39,6 +39,6 @@ class Tool:
         return surfaces
 
     @staticmethod
-    def render_text(surface, texts, position):
+    def render_text(surface, texts, position, gap):
         for index, text in enumerate(texts):
-            surface.blit(text, (position[0], position[1] + index * 30))
+            surface.blit(text, (position[0], position[1] + index * gap))

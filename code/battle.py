@@ -266,6 +266,7 @@ class Battle:
         self.opponent.lead.update_hp()
 
         self.blit_hud()
+        self.blit_pkmn_info(self.player.lead)
         self.check_interactions()
         self.init_active_menu()
 
@@ -311,3 +312,41 @@ class Battle:
                 if (self.interactive_rect["pkmn" + str(i+1)].collidepoint(self.cursor.position)
                         and self.cursor.button[0]):
                     self.player.switch(i)
+
+    @staticmethod
+    def print_stat_change(boost):
+        txt = ""
+        for i in range(abs(boost)):
+            if boost > 0:
+                txt += "▲"
+            if boost < 0:
+                txt += "▼"
+        for i in range(6 - abs(boost)):
+            txt += "•"
+        return txt
+
+    def blit_pkmn_info(self, pkmn):
+        font = pygame.font.Font("../assets/dialogs/SegoeUI-VF/SegoeUI-VF.ttf", 18)
+        infos = ""
+        status = " | " + str(pkmn.status["main"]) if pkmn.status["main"] else ""
+        infos += pkmn.name + status + "\n"
+        infos += str(pkmn.hp) + "/" + str(pkmn.max_hp) + "\n"
+        infos += "===============" + "\n"
+        for t in pkmn.type:
+            infos += str(t.name) + "\n"
+        infos += "N°" + str(pkmn.id) + " | Gender : " + pkmn.gender + " | Lvl " + str(pkmn.level) + "\n"
+        item = pkmn.item.name if pkmn.item else ""
+        infos += "Ability : " + pkmn.ability.name + " | Item : " + item + "\n"
+        infos += "===============" + "\n"
+        infos += "Stats :" + "\n"
+        stats_name = ["atk", "deff", "aspe", "dspe", "spd"]
+        stats = [pkmn.atk, pkmn.deff, pkmn.aspe, pkmn.dspe, pkmn.spd]
+        for sn, s in zip(stats_name, stats):
+            infos += sn + " : " + str(s) + " " + self.print_stat_change(pkmn.boosts[sn]) + "\n"
+        infos += "===============" + "\n"
+        infos += "Moves :"
+        for m in pkmn.moveset:
+            infos += m.name + " " + str(m.pp) + "/" + str(m.max_pp) + "\n"
+
+        infos = Tool.formatted_text(infos, (0, 0, 0), font)
+        Tool.render_text(self.display, infos, (0, 0), 22)

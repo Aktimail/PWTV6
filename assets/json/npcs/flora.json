@@ -5,12 +5,12 @@
 "direction": "right",
 "scan": 5,
 "team": {
-  "chandelure": 50
+  "zekrom": 50
 },
 "pkmn_mods": {
-  "chandelure": {
+  "regigigas": {
     "shiny": [
-      true
+      false
     ]
   }
 },

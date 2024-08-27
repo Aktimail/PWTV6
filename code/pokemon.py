@@ -136,8 +136,14 @@ class Pokemon:
             if "item" in mod:
                 self.item = Item(mod["item"])
 
+            if "status_main" in mod:
+                self.status["main"] = mod["status_main"]
+
+            if "status_sec" in mod:
+                self.status["sec"] = mod["status_sec"]
+
             if "shiny" in mod:
-                self.shiny = mod["shiny"]
+                self.shiny = mod["shiny"][0]
 
             if "hp" in mod:
                 self.hp = mod["hp"]
@@ -233,7 +239,7 @@ class Pokemon:
                 return False
         return True
 
-    def calcul_damages(self, move: Move, target):
+    def calcul_damages(self, move, target):
         if move.power:
             # power
             hh = 1
@@ -459,20 +465,24 @@ class Pokemon:
             return dmgs
         return 0
 
-    def additional_effects(self):
-        pass
+    def additional_effects(self, move, target):
+        if move.boosts:
+            if move.target == "user":
+                for stat in self.boosts:
+                    self.boosts[stat] += move.boosts[stat]
+            elif move.target == "adjacent_pokemon":
+                for stat in target.boosts:
+                    target.boosts[stat] += move.boosts[stat]
 
-    def attack(self, move: Move, target):
+    def attack(self, move, target):
         if self.can_attack(move, target):
             self.comments.append(str(self.name + " use " + move.name))
             move.pp -= 1
             if not move.accuracy or random.randint(0, 100) <= move.accuracy:
-                if move.category == "status":
-                    pass
-                else:
-                    dmgs = self.calcul_damages(move, target)
-                    target.damages_received = dmgs
-                    target.check_hp()
+                dmgs = self.calcul_damages(move, target)
+                target.damages_received = dmgs
+                target.check_hp()
+                self.additional_effects(move, target)
             else:
                 self.comments.append("But it failed !")
         return

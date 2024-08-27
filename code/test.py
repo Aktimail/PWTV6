@@ -1,3 +1,4 @@
+"""
 import random
 
 from move import *
@@ -481,7 +482,7 @@ class Pokemon:
 
 
 # pokemons
-"""Chandelure = Pokemon(609, "Chandelure", (Fire_type, Ghost_type), male, flash_fire, 100,
+Chandelure = Pokemon(609, "Chandelure", (Fire_type, Ghost_type), male, flash_fire, 100,
                      {"hp": 60, "atk": 55, "deff": 90, "aspe": 145, "dspe": 90, "spd": 80},  # stats
                      {"hp": 0, "atk": 0, "deff": 252, "aspe": 252, "dspe": 0, "spd": 6},  # evs
                      {"hp": 31, "atk": 31, "deff": 31, "aspe": 31, "dspe": 31, "spd": 31},  # ivs

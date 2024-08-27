@@ -51,8 +51,8 @@ class Move:
 
     @staticmethod
     def init_boosts(data):
-        boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0}
         if data:
+            boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0}
             stats_trad = {"ATK_STAGE": "atk",
                           "DFE_STAGE": "deff",
                           "ATS_STAGE": "aspe",
@@ -62,4 +62,5 @@ class Move:
                 for stat in stats_trad:
                     if stat in mod["battleStage"]:
                         boosts[stats_trad[stat]] = mod["modificator"]
-        return boosts
+            return boosts
+        return None

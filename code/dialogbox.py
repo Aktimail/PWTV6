@@ -34,7 +34,7 @@ class DialogBox:
         self.screen.display.blit(self.panel, self.panel_pos)
         if self.texts:
             Tool.render_text(self.screen.display, Tool.formatted_text(
-                self.texts[self.txt_idx][:int(self.txt_progression)], self.txt_color, self.font), self.txt_pos)
+                self.texts[self.txt_idx][:int(self.txt_progression)], self.txt_color, self.font), self.txt_pos, 30)
 
             if self.txt_progression < len(self.texts[self.txt_idx]):
                 self.txt_progression += self.txt_speed
