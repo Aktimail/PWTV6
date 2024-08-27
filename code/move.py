@@ -46,5 +46,20 @@ class Move:
         }
         self.effect_chance = data["effectChance"]
         self.target = data["battleEngineAimedTarget"]
-        self.stat_mod = data["battleStageMod"]
+        self.boosts = self.init_boosts(data["battleStageMod"])
         self.status = data["moveStatus"]
+
+    @staticmethod
+    def init_boosts(data):
+        boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0}
+        if data:
+            stats_trad = {"ATK_STAGE": "atk",
+                          "DFE_STAGE": "deff",
+                          "ATS_STAGE": "aspe",
+                          "DFS_STAGE": "dspe",
+                          "SPD_STAGE": "spd"}
+            for mod in data:
+                for stat in stats_trad:
+                    if stat in mod["battleStage"]:
+                        boosts[stats_trad[stat]] = mod["modificator"]
+        return boosts

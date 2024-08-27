@@ -76,6 +76,8 @@ class Pokemon:
 
         self.ko = False
 
+        self.weather = None
+
         self.charge = False
         self.mud_sport = False
         self.water_sport = False
@@ -235,7 +237,7 @@ class Pokemon:
         if move.power:
             # power
             hh = 1
-            if "helping hand" in self.status:
+            if self.status["sec"] == "helping hand":
                 hh = 1.5
             it = 1
             if self.item:
@@ -366,13 +368,30 @@ class Pokemon:
             deff = target_deff * sx * mod
             # mod 1
             brn = 1
+            if self.status["main"] == "burn":
+                if move.category == "physical" and self.ability.name != "guts":
+                    brn = 0.5
             rl = 1
+            if target.reflect and move.category == "physical":
+                rl = 0.5
+            if target.light_screen and move.category == "special":
+                rl = 0.5
             tvt = 1  # 2v2
             sr = 1
+            if self.weather == "sun" and move.type.name == "fire":
+                sr = 1.5
+            if self.weather == "rain" and move.type.name == "fire":
+                sr = 0.5
+            if self.weather == "sun" and move.type.name == "water":
+                sr = 0.5
+            if self.weather == "rain" and move.type.name == "water":
+                sr = 1.5
             ff = 1
+            pass
             mod1 = brn * rl * tvt * sr * ff
             # mod 2
             mod2 = 1
+            pass
             # critical hit
             crit = 1
             if random.uniform(0, 100) <= 6.25:
@@ -380,11 +399,13 @@ class Pokemon:
                 self.comments.append("A critical hit !")
             # random
             r = (random.randint(217, 255) * 100) / 255
+            if move.name == "spit_up":
+                r = 100
             # stab
             stab = 1
             for t in self.type:
                 if move.type.name == t.name:
-                    stab = 1.5
+                    stab = 2 if self.ability.name == "adaptability" else 1.5
             # types
             typeA, typeB = 1, 1
             if target.type[0].name in move.type.immunes:
@@ -409,9 +430,22 @@ class Pokemon:
                 self.comments.append("It's super effective !")
             # mod 3
             srf = 1
+            if target.ability.name == "solid_rock" or target.ability.name == "filter":
+                if typeA + typeB > 2.5:
+                    srf = 0.75
             eb = 1
+            if self.item and self.item.name == "expert_belt" and typeA + typeB > 2.5:
+                eb = 1.2
             tl = 1
+            if self.ability.name == "tinted_lens" and typeA + typeB < 2:
+                tl = 2
             trb = 1
+            if target.item and target.item.name in DATA.rbset:
+                if DATA.rbset[target.item.name] == move.type.name:
+                    if typeA + typeB > 2.5:
+                        trb = 0.5
+            if target.item and target.item.name == "chilan_berry" and move.type.name == "normal":
+                trb = 0.5
             mod3 = srf * eb * tl * trb
             # calcul
             dmgs = int(self.level * 2 / 5)

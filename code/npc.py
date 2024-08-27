@@ -17,7 +17,7 @@ class NPC(Entity):
         self.spritesheet = pygame.image.load(f"../assets/spritesheets/{data["spritesheet"]}.png")
         self.active_spritesheet = self.spritesheet
 
-        self.pkmn_mods = data["pkmns_mod"] if "pkmns_mod" in data else None
+        self.pkmn_mods = data["pkmn_mods"] if "pkmn_mods" in data else None
         self.team = self.init_team(data["team"])
         self.lead = self.team[0] if self.team else None
         self.dialogs = data["dialogs"]

@@ -5,7 +5,14 @@
 "direction": "right",
 "scan": 5,
 "team": {
-  "garchomp": 50
+  "chandelure": 50
+},
+"pkmn_mods": {
+  "chandelure": {
+    "shiny": [
+      true
+    ]
+  }
 },
 "fighter": true,
 "dialogs": ["salut tout le monde\nc est squeezie",
