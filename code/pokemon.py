@@ -70,7 +70,7 @@ class Pokemon:
 
         self.exp_type = self.forms[0]["experienceType"]
         self.exp = 0
-        self.remaining_exp = self.remaining_exp_update()
+        self.remaining_exp = self.exp_to_nxt_lvl()
 
         self.init_mods(mod)
 
@@ -174,7 +174,7 @@ class Pokemon:
             self.ko = True
             self.comments.append(str(self.name + " is ko !"))
 
-    def remaining_exp_update(self):
+    def exp_to_nxt_lvl(self):
         if self.level == 100:
             return 0
         if self.exp_type == 0:
@@ -458,6 +458,9 @@ class Pokemon:
             dmgs = int(int(dmgs) * stab * typeA * typeB * mod3)
             return dmgs
         return 0
+
+    def additional_effects(self):
+        pass
 
     def attack(self, move: Move, target):
         if self.can_attack(move, target):
