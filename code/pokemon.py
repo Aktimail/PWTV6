@@ -65,7 +65,7 @@ class Pokemon:
         self.dspe = self.update_stat("dspe")
         self.spd = self.update_stat("spd")
 
-        self.boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0}
+        self.boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0, "acc": 0, "eva": 0}
         self.status = {"main": None, "sec": None}
 
         self.exp_type = self.forms[0]["experienceType"]
@@ -126,7 +126,8 @@ class Pokemon:
                 self.nature = mod["nature"]
 
             if "moveset" in mod:
-                self.moveset.clear()
+                for _ in range(len(mod["moveset"])):
+                    self.moveset.remove(random.choice(self.moveset))
                 for move in mod["moveset"]:
                     self.moveset.append(Move(move))
 
@@ -156,9 +157,9 @@ class Pokemon:
         for move in self.movepool:
             if move["klass"] == "LevelLearnableMove":
                 if move["level"] <= self.level:
-                    moveset.append(Move(move["move"]))
-                    if len(moveset) > 4:
+                    if len(moveset) >= 4:
                         moveset.remove(random.choice(moveset))
+                    moveset.append(Move(move["move"]))
         return moveset
 
     def update_hp(self):
@@ -400,7 +401,7 @@ class Pokemon:
             pass
             # critical hit
             crit = 1
-            if random.uniform(0, 100) <= 6.25:
+            if random.uniform(0, 100) <= 6.25 * move.critical_rate:
                 crit = 2
                 self.comments.append("A critical hit !")
             # random
@@ -466,15 +467,37 @@ class Pokemon:
         return 0
 
     def additional_effects(self, move, target):
+        pkmn = self
         if move.boosts:
-            if move.target == "user":
-                for stat in self.boosts:
+            for stat in self.boosts:
+                if move.target == "user":
                     self.boosts[stat] += move.boosts[stat]
-            elif move.target == "adjacent_pokemon":
-                for stat in target.boosts:
+                elif move.target == "adjacent_pokemon":
+                    pkmn = target
                     target.boosts[stat] += move.boosts[stat]
 
+                if -6 <= self.boosts[stat] <= 6:
+                    if move.boosts[stat] == 1:
+                        self.comments.append((pkmn.name + "'s " + stat + " rose !"))
+                    if move.boosts[stat] == 2:
+                        self.comments.append((pkmn.name + "'s " + stat + " rose sharply !"))
+                    if move.boosts[stat] >= 3:
+                        self.comments.append((pkmn.name + "'s " + stat + " rose drastically !"))
+                    if move.boosts[stat] == -1:
+                        self.comments.append((pkmn.name + "'s " + stat + " fell !"))
+                    if move.boosts[stat] == -2:
+                        self.comments.append((pkmn.name + "'s " + stat + " harshly fell !"))
+                    if move.boosts[stat] <= -3:
+                        self.comments.append((pkmn.name + "'s " + stat + " severely fell !"))
+                elif pkmn.boosts[stat] >= 6:
+                    pkmn.boosts[stat] = 6
+                    self.comments.append((pkmn.name + "'s " + stat + " won't go any higher !"))
+                elif pkmn.boosts[stat] <= -6:
+                    pkmn.boosts[stat] = -6
+                    self.comments.append((pkmn.name + "'s " + stat + " won't go any lower! !"))
+
     def attack(self, move, target):
+        self.comments.clear()
         if self.can_attack(move, target):
             self.comments.append(str(self.name + " use " + move.name))
             move.pp -= 1

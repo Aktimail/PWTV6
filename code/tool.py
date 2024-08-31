@@ -14,7 +14,7 @@ class Tool:
         height = spritesheet.get_height() // 4
         for j, k in enumerate(all_images.keys()):
             for i in range(4):
-                all_images[k].append(spritesheet.subsurface(pygame.Rect(i * width, j * height, 24, 32)))
+                all_images[k].append(spritesheet.subsurface(pygame.Rect(i * width, j * height, width, height)))
         return all_images
 
     @staticmethod

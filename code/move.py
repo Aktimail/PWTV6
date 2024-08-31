@@ -52,12 +52,14 @@ class Move:
     @staticmethod
     def init_boosts(data):
         if data:
-            boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0}
+            boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0, "acc": 0, "eva": 0}
             stats_trad = {"ATK_STAGE": "atk",
                           "DFE_STAGE": "deff",
                           "ATS_STAGE": "aspe",
                           "DFS_STAGE": "dspe",
-                          "SPD_STAGE": "spd"}
+                          "SPD_STAGE": "spd",
+                          "ACC_STAGE": "acc",
+                          "EVA_STAGE": "eva"}
             for mod in data:
                 for stat in stats_trad:
                     if stat in mod["battleStage"]:

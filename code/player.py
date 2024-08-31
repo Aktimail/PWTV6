@@ -12,10 +12,9 @@ class Player(Entity):
         super().__init__(name, x, y)
         self.map = map
 
-        self.team = [Pokemon("garchomp", 50, {"moveset": ["calm_mind"]}),
+        self.team = [Pokemon("aggron", 50, {"moveset": ["Calm_mind", "scary_face"]}),
                      Pokemon("haxorus", 50),
                      Pokemon("togekiss", 50)]
-        print(self.team[0].moveset[0].boosts)
         self.lead = self.team[0] if self.team else None
 
         self.inventory = {

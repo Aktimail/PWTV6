@@ -327,26 +327,19 @@ class Battle:
 
     def blit_pkmn_info(self, pkmn):
         font = pygame.font.Font("../assets/dialogs/SegoeUI-VF/SegoeUI-VF.ttf", 18)
-        infos = ""
-        status = " | " + str(pkmn.status["main"]) if pkmn.status["main"] else ""
-        infos += pkmn.name + status + "\n"
-        infos += str(pkmn.hp) + "/" + str(pkmn.max_hp) + "\n"
-        infos += "===============" + "\n"
-        for t in pkmn.type:
-            infos += str(t.name) + "\n"
-        infos += "N°" + str(pkmn.id) + " | Gender : " + pkmn.gender + " | Lvl " + str(pkmn.level) + "\n"
+
+        infos = pkmn.name + "\n"
+        type2 = " | " + pkmn.type[1].name if len(pkmn.type) > 1 else ""
+        infos += "Type : " + pkmn.type[0].name + type2 + "\n"
+        infos += "\n"
+        infos += "Ability : " + pkmn.ability.name + "\n"
         item = pkmn.item.name if pkmn.item else ""
-        infos += "Ability : " + pkmn.ability.name + " | Item : " + item + "\n"
-        infos += "===============" + "\n"
-        infos += "Stats :" + "\n"
+        infos += "Item : " + item + "\n"
+        infos += "\n"
         stats_name = ["atk", "deff", "aspe", "dspe", "spd"]
         stats = [pkmn.atk, pkmn.deff, pkmn.aspe, pkmn.dspe, pkmn.spd]
         for sn, s in zip(stats_name, stats):
             infos += sn + " : " + str(s) + " " + self.print_stat_change(pkmn.boosts[sn]) + "\n"
-        infos += "===============" + "\n"
-        infos += "Moves :"
-        for m in pkmn.moveset:
-            infos += m.name + " " + str(m.pp) + "/" + str(m.max_pp) + "\n"
 
         infos = Tool.formatted_text(infos, (0, 0, 0), font)
         Tool.render_text(self.display, infos, (0, 0), 22)
