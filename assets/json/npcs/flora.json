@@ -5,15 +5,9 @@
 "direction": "right",
 "scan": 5,
 "team": {
-  "zekrom": 50
+  "zekrom": 100
 },
-"pkmn_mods": {
-  "regigigas": {
-    "shiny": [
-      false
-    ]
-  }
-},
+"pkmn_mods": {},
 "fighter": true,
 "dialogs": ["salut tout le monde\nc est squeezie",
 "salutttt"],

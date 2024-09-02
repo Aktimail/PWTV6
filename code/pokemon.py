@@ -57,13 +57,20 @@ class Pokemon:
 
         self.nature = random.choice(tuple(DATA.ALL_NATURES.values()))
 
+        self.init_mods(mod)
+
         self.hp = self.update_stat("hp")
         self.max_hp = self.hp
         self.atk = self.update_stat("atk")
+        self.ig_atk = self.atk
         self.deff = self.update_stat("deff")
+        self.ig_deff = self.deff
         self.aspe = self.update_stat("aspe")
+        self.ig_aspe = self.aspe
         self.dspe = self.update_stat("dspe")
+        self.ig_dspe = self.dspe
         self.spd = self.update_stat("spd")
+        self.ig_spd = self.spd
 
         self.boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0, "acc": 0, "eva": 0}
         self.status = {"main": None, "sec": None}
@@ -71,8 +78,6 @@ class Pokemon:
         self.exp_type = self.forms[0]["experienceType"]
         self.exp = 0
         self.remaining_exp = self.exp_to_nxt_lvl()
-
-        self.init_mods(mod)
 
         self.ko = False
 
@@ -123,13 +128,14 @@ class Pokemon:
                     self.evs[stat] = mod["evs"][stat]
 
             if "nature" in mod:
-                self.nature = mod["nature"]
+                self.nature = DATA.ALL_NATURES[mod["nature"]]
 
             if "moveset" in mod:
                 for _ in range(len(mod["moveset"])):
                     self.moveset.remove(random.choice(self.moveset))
                 for move in mod["moveset"]:
-                    self.moveset.append(Move(move))
+                    if move != "":
+                        self.moveset.append(Move(move))
 
             if "ability" in mod:
                 self.ability = Ability(mod["ability"])
@@ -467,8 +473,8 @@ class Pokemon:
         return 0
 
     def additional_effects(self, move, target):
-        pkmn = self
         if move.boosts:
+            pkmn = self
             for stat in self.boosts:
                 if move.target == "user":
                     self.boosts[stat] += move.boosts[stat]
@@ -496,6 +502,12 @@ class Pokemon:
                     pkmn.boosts[stat] = -6
                     self.comments.append((pkmn.name + "'s " + stat + " won't go any lower! !"))
 
+            pkmn.ig_atk = int(pkmn.atk * DATA.F_BOOSTS[pkmn.boosts["atk"] + 6])
+            pkmn.ig_deff = int(pkmn.deff * DATA.F_BOOSTS[pkmn.boosts["deff"] + 6])
+            pkmn.ig_aspe = int(pkmn.aspe * DATA.F_BOOSTS[pkmn.boosts["aspe"] + 6])
+            pkmn.ig_dspe = int(pkmn.dspe * DATA.F_BOOSTS[pkmn.boosts["dspe"] + 6])
+            pkmn.ig_spd = int(pkmn.spd * DATA.F_BOOSTS[pkmn.boosts["spd"] + 6])
+
     def attack(self, move, target):
         self.comments.clear()
         if self.can_attack(move, target):
@@ -508,24 +520,3 @@ class Pokemon:
                 self.additional_effects(move, target)
             else:
                 self.comments.append("But it failed !")
-        return
-
-    def show_info(self):
-        print(self.name, end=""), print(" | " + str(self.status["main"]) if not self.status["main"] is None else "")
-        print(str(self.hp) + "/" + str(self.max_hp))
-        print("===============")
-        for t in self.type:
-            print(t)
-        print()
-        print("N°" + str(self.id), "| Gender :", self.gender, "| Lvl", self.level)
-        print("Ability :", self.ability, "| Item :", self.item)
-        print("===============")
-        print("Stats :")
-        stats_name = ["atk", "deff", "aspe", "dspe", "spd"]
-        stats = [self.atk, self.deff, self.aspe, self.dspe, self.spd]
-        for sn, s in zip(stats_name, stats):
-            print(sn, ":", s, "")
-        print("===============")
-        print("Moves :")
-        for m in self.moveset:
-            print(m.name, str(m.pp) + "/" + str(m.max_pp))

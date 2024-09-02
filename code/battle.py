@@ -75,30 +75,35 @@ class Battle:
         pkmn_asset_size = (120, 80)
         x = 1075 if len(self.player.team) <= 3 else 950
         self.team_menu_hud = {
-            "pkmn2": {
+            "pkmn1": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
                 "pos": (x, 320)
             },
-            "pkmn3": {
+            "pkmn2": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
                 "pos": (x, 400)
             },
-            "pkmn4": {
+            "pkmn3": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
                 "pos": (x, 480)
             },
-            "pkmn5": {
+            "pkmn4": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
                 "pos": (x + 125, 320)
             },
-            "pkmn6": {
+            "pkmn5": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
                 "pos": (x + 125, 400)
+            },
+            "pkmn6": {
+                "image": pygame.image.load("../assets/battle/battlebar.png"),
+                "size": pkmn_asset_size,
+                "pos": (x + 125, 480)
             }
         }
 
@@ -218,8 +223,8 @@ class Battle:
     def blit_team_menu(self):
         x = 0
         for asset in self.team_menu_hud:
-            x += 1
             if x < len(self.player.team):
+                x += 1
                 image = self.team_menu_hud[asset]["image"]
                 image = pygame.transform.scale(image, self.team_menu_hud[asset]["size"])
                 self.display.blit(image, self.team_menu_hud[asset]["pos"])
@@ -308,7 +313,7 @@ class Battle:
 
         if self.active_menu == "team":
             self.blit_team_menu()
-            for i in range(1, len(self.player.team)):
+            for i in range(len(self.player.team)):
                 if (self.interactive_rect["pkmn" + str(i+1)].collidepoint(self.cursor.position)
                         and self.cursor.button[0]):
                     self.player.switch(i)

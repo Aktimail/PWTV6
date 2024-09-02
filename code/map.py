@@ -21,7 +21,6 @@ class Map:
         self.spawns = []
         self.switches = []
         self.npcs = []
-        self.items = {}
 
         self.gate = None
 
@@ -78,7 +77,6 @@ class Map:
         self.spawns.clear()
         self.switches.clear()
         self.npcs.clear()
-        self.items.clear()
         DATA.ENTITIES_DESTINATIONS.clear()
 
         for obj in self.tmx_data.objects:
@@ -101,8 +99,6 @@ class Map:
                 for npc in self.npcs:
                     if npc.name == obj.name.split(" ")[0]:
                         npc.checkpoints[int(obj.name.split(" ")[1])] = pygame.Rect(obj.x, obj.y, 16, 16)
-            if "item" in obj.type:
-                self.items[obj.name] = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
 
     def check_object(self):
         self.player.collision = False

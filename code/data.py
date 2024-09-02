@@ -1,6 +1,8 @@
 class DATA:
     ENTITIES_DESTINATIONS = {}
 
+    F_BOOSTS = [0.25, 0.29, 0.33, 0.4, 0.5, 0.66, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+
     ALL_NATURES = {
         "hardy": {"atk": 1, "deff": 1, "aspe": 1, "dspe": 1, "spd": 1},
         "lonely": {"atk": 1.1, "deff": 0.9, "aspe": 1, "dspe": 1, "spd": 1},
