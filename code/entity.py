@@ -14,7 +14,6 @@ class Entity(pygame.sprite.Sprite):
         self.position = pygame.math.Vector2(x, y)
 
         self.in_motion = False
-        self.reserve_next_tile = True
         self.direction = "down"
         self.step_progression = 0
         self.speed = 1

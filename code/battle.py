@@ -29,97 +29,101 @@ class Battle:
         self.main_menu_hud = {
             "battle": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": (80, 80),
-                "pos": (1200, 240)
+                "size": (self.screen.get_width() / 16, self.screen.get_height() / 9),
+                "pos": (self.screen.get_width() / 1.06666667, self.screen.get_height() / 3)
             },
             "team": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": (80, 80),
-                "pos": (1200, 320)
+                "size": (self.screen.get_width() / 16, self.screen.get_height() / 9),
+                "pos": (self.screen.get_width() / 1.06666667, self.screen.get_height() / 2.25)
             },
             "bag": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": (80, 80),
-                "pos": (1200, 400)
+                "size": (self.screen.get_width() / 16, self.screen.get_height() / 9),
+                "pos": (self.screen.get_width() / 1.06666667, self.screen.get_height() / 1.5)
             },
             "run": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": (80, 80),
-                "pos": (1200, 480)
+                "size": (self.screen.get_width() / 16, self.screen.get_height() / 9),
+                "pos": (self.screen.get_width() / 1.06666667, self.screen.get_height() / 1.8)
             }
         }
-        move_asset_size = (190, 80)
+        move_asset_size = (self.screen.get_width() / 6.73684211, self.screen.get_height() / 9)
         self.battle_menu_hud = {
             "move1": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": move_asset_size,
-                "pos": (1005, 240)
+                "pos": (self.screen.get_width() / 1.27363184, self.screen.get_height() / 3)
             },
             "move2": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": move_asset_size,
-                "pos": (1005, 320)
+                "pos": (self.screen.get_width() / 1.27363184, self.screen.get_height() / 2.25)
             },
             "move3": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": move_asset_size,
-                "pos": (1005, 400)
+                "pos": (self.screen.get_width() / 1.27363184, self.screen.get_height() / 1.8)
             },
             "move4": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": move_asset_size,
-                "pos": (1005, 480)
+                "pos": (self.screen.get_width() / 1.27363184, self.screen.get_height() / 1.5)
             }
         }
 
-        pkmn_asset_size = (120, 80)
-        x = 1075 if len(self.player.team) <= 3 else 950
+        pkmn_asset_size = (self.screen.get_width() / 10.6666667, self.screen.get_height() / 9)
+        x = (self.screen.get_width() / 1.19069767) if len(self.player.team) <= 3 else \
+            (self.screen.get_height() / 1.34736842)
         self.team_menu_hud = {
             "pkmn1": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
-                "pos": (x, 320)
+                "pos": (x, self.screen.get_height() / 2.25)
             },
             "pkmn2": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
-                "pos": (x, 400)
+                "pos": (x, self.screen.get_height() / 1.8)
             },
             "pkmn3": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
-                "pos": (x, 480)
+                "pos": (x, self.screen.get_height() / 1.5)
             },
             "pkmn4": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
-                "pos": (x + 125, 320)
+                "pos": (x + self.screen.get_width() / 10.24, self.screen.get_height() / 2.25)
             },
             "pkmn5": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
-                "pos": (x + 125, 400)
+                "pos": (x + self.screen.get_width() / 10.24, self.screen.get_height() / 1.8)
             },
             "pkmn6": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
                 "size": pkmn_asset_size,
-                "pos": (x + 125, 480)
+                "pos": (x + self.screen.get_width() / 10.24, self.screen.get_height() / 1.5)
             }
         }
 
-        self.dialog_box = DialogBox(self.screen, self.player, "battle_box", (1280, 150), (0, 570))
+        self.dialog_box = DialogBox(self.screen, self.player, "battle_box",
+                                    (self.screen.get_width(), self.screen.get_height() / 4.8),
+                                    (0, self.screen.get_height() / 1.26315789))
 
     def init_player_hud(self):
         self.player_assets = {
             "ground": {
                 "image": pygame.image.load("../assets/battle/player/ground.png"),
-                "size": (1024, 128),
-                "pos": (-50, 442)
+                "size": (self.screen.get_width() / 1.25, self.screen.get_height() / 5.625),
+                "pos": (self.screen.get_width() / -25.6, self.screen.get_height() / 1.62895928)
             },
             "pokemon": {
                 "image": pygame.image.load(self.player.lead.back_spritesheet),
-                "size": (672, 672),
-                "pos": [100, self.player.lead.front_offset_y * 7 - self.y_oscillation[self.y_oscillation_idx]]
+                "size": (self.screen.get_width() / 1.9047619, self.screen.get_height() / 1.07142857),
+                "pos": [self.screen.get_width() / 12.8, self.screen.get_height() /
+                        (720 / (self.player.lead.front_offset_y * 7 - self.y_oscillation[self.y_oscillation_idx]))]
             },
             "pkmn_name": {
                 "image": None,
@@ -133,8 +137,8 @@ class Battle:
             },
             "battlebar": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": (275, 80),
-                "pos": (0, 480)
+                "size": (self.screen.get_width() / 4.5, self.screen.get_height() / 9),
+                "pos": (0, self.screen.get_height() / 1.5)
             },
             "hp_bar": {
                 "image": None,
@@ -143,7 +147,8 @@ class Battle:
             },
             "hp": {
                 "image": self.init_hp_color(self.player.lead),
-                "size": (int(self.player.lead.hp / self.player.lead.max_hp * 276), 12),
+                "size": (int(self.player.lead.hp / self.player.lead.max_hp * (self.screen.get_width() / 4.5)),
+                         self.screen.get_height() / 60),
                 "pos": (0, 0)
             },
             "pokeballs": {
@@ -157,13 +162,14 @@ class Battle:
         self.opp_assets = {
             "ground": {
                 "image": pygame.image.load("../assets/battle/opponent/ground.png"),
-                "size": (450, 200),
-                "pos": (700, 225)
+                "size": (self.screen.get_width() / 2.84444444, self.screen.get_height() / 3.6),
+                "pos": (self.screen.get_width() / 1.82857143, self.screen.get_height() / 3.2)
             },
             "pokemon": {
                 "image": pygame.image.load(self.opponent.lead.spritesheet),
-                "size": (288, 288),
-                "pos": [775, self.opponent.lead.front_offset_y * 3 + 50]
+                "size": (self.screen.get_width() / 4.44444444, self.screen.get_height() / 2.5),
+                "pos": [self.screen.get_width() / 1.6516129,
+                        self.screen.get_height() / (720 / (self.opponent.lead.front_offset_y * 3 + 50))]
             },
             "pkmn_name": {
                 "image": None,
@@ -177,8 +183,8 @@ class Battle:
             },
             "battlebar": {
                 "image": pygame.image.load("../assets/battle/battlebar.png"),
-                "size": (275, 60),
-                "pos": (1005, 5)
+                "size": (self.screen.get_width() / 4.65454545, self.screen.get_height() / 12),
+                "pos": (self.screen.get_width() / 1.27363184, self.screen.get_height() / 144)
             },
             "hp_bar": {
                 "image": None,
@@ -187,8 +193,9 @@ class Battle:
             },
             "hp": {
                 "image": self.init_hp_color(self.opponent.lead),
-                "size": (int(self.opponent.lead.hp / self.opponent.lead.max_hp * 276), 12),
-                "pos": (0, 30)
+                "size": (int(self.opponent.lead.hp / self.opponent.lead.max_hp * (self.screen.get_width() / 4.5)),
+                         self.screen.get_height() / 60),
+                "pos": (0, self.screen.get_height() / 24)
             },
             "pokeballs": {
                 "image": None,

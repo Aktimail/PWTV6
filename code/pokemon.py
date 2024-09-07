@@ -59,17 +59,17 @@ class Pokemon:
 
         self.init_mods(mod)
 
-        self.hp = self.update_stat("hp")
+        self.hp = self.init_stats("hp")
         self.max_hp = self.hp
-        self.atk = self.update_stat("atk")
+        self.atk = self.init_stats("atk")
         self.ig_atk = self.atk
-        self.deff = self.update_stat("deff")
+        self.deff = self.init_stats("deff")
         self.ig_deff = self.deff
-        self.aspe = self.update_stat("aspe")
+        self.aspe = self.init_stats("aspe")
         self.ig_aspe = self.aspe
-        self.dspe = self.update_stat("dspe")
+        self.dspe = self.init_stats("dspe")
         self.ig_dspe = self.dspe
-        self.spd = self.update_stat("spd")
+        self.spd = self.init_stats("spd")
         self.ig_spd = self.spd
 
         self.boosts = {"atk": 0, "deff": 0, "aspe": 0, "dspe": 0, "spd": 0, "acc": 0, "eva": 0}
@@ -168,18 +168,18 @@ class Pokemon:
                     moveset.append(Move(move["move"]))
         return moveset
 
-    def update_hp(self):
-        if self.damages_received:
-            self.damages_received -= 1
-            self.hp -= 1
-            self.check_hp()
-
-    def update_stat(self, stat):
+    def init_stats(self, stat):
         if stat == "hp":
             return math.floor(((self.ivs[stat] + 2 * self.base_stats[stat] + math.floor(self.evs[stat] / 4)) *
                                self.level / 100) + self.level + 10)
         return math.floor((((self.ivs[stat] + 2 * self.base_stats[stat] + math.floor(self.evs[stat] / 4)) *
                             self.level / 100) + 5) * self.nature[stat])
+
+    def update_hp(self):
+        if self.damages_received:
+            self.damages_received -= 1
+            self.hp -= 1
+            self.check_hp()
 
     def check_hp(self):
         if self.hp <= 0:
@@ -321,9 +321,9 @@ class Pokemon:
                 fa = 1.25
             power = hh * move.power * it * chg * ms * ws * ua * fa
             # atk
-            move_category = self.atk
+            move_category = self.ig_atk
             if move.category == "special":
-                move_category = self.aspe
+                move_category = self.ig_aspe
             am = 1
             if move.category == "physical":
                 if self.ability.name == "pure_power" or self.ability.name == "huge_power":

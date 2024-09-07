@@ -13,8 +13,9 @@ class Player(Entity):
         self.map = map
 
         self.team = [Pokemon("reshiram", 100,
-                             {"moveset": ["flamethrower", "", "", ""],
-                              "nature": "modest"})]
+                             {"moveset": ["flamethrower", "calm_mind", "", ""],
+                              "nature": "modest"}),
+                     Pokemon("togekiss", 100)]
         self.lead = self.team[0] if self.team else None
 
         self.inventory = {
